@@ -18,10 +18,10 @@ makeCacheMatrix <- function(x = matrix()) {
     #return queried matrix
     getmatrix1 <- function() x           
 
-   #set the cache of matrix
+    #set the matrix in cache
     setmatrix2 <- function(m) mtrx <<- m
    
-   #return previous cached matrix if one exists
+    #return previous cached matrix if one exists
     getmatrix2 <- function() {
         if(exists("mtrx")){
             mtrx
@@ -30,7 +30,7 @@ makeCacheMatrix <- function(x = matrix()) {
     #set the cache of inverse matrix
     setinverse <- function(inverse) invmtr <<- inverse  
 
-    #return the inverse
+    #return the inverse from cache
     getinverse <- function() invmtr
     
     list(getmatrix1 = getmatrix1, getmatrix2 = getmatrix2,
@@ -40,8 +40,10 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 
-## This function returns a matrix inverse from cache if it exists for the matrix
-# we want to invert or calculates the inverse if no cache exists.
+## This function retrieves matrix inverse from cache if it exists for the matrix
+# we want to invert. If not found from cache it calculates and returns the 
+# inverse. This function also sends matrix and its inverse to cache for future
+# queries. 
 
 cacheSolve <- function(x, ...) {
 
@@ -50,17 +52,18 @@ cacheSolve <- function(x, ...) {
     #previously cached matrix
     mtr2 <- x$getmatrix2()      
 
-    #if queried and cached matrix are identical
+    #if queried and cached matrix are identical get inverse from cache
+    # and return it
     if(identical(mtr, mtr2)){
         message("getting inverse matrix from cache")
         inverse <- x$getinverse()
         return(inverse)
     }
 
+    #if not found from cache then solve the inverse and cache matrix and inverse
     inverse <- solve(mtr)
     x$setinverse(inverse)
     x$setmatrix2(mtr)
     inverse
 }
-
 
